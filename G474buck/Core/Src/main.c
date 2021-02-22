@@ -112,14 +112,14 @@ int main(void)
     Error_Handler();
   }  
 
-  
+	/* Start the PWMs */
 	HAL_HRTIM_WaveformCounterStart(&hhrtim1,HRTIM_TIMERID_TIMER_A);
 	HAL_HRTIM_WaveformOutputStart(&hhrtim1, HRTIM_OUTPUT_TA1);
 	MyButtonInit();
 	MyTimerInit();
 //	HAL_TIM_Base_Start_IT(&htim6);
 	
-	/* Start the PWMs */
+	
 	hhrtim1.Instance->sTimerxRegs[0].PERxR = 27200;//通过修改重装载值PER，从而修改PWM的频率-200k
 	hhrtim1.Instance->sTimerxRegs[0].CMP1xR = 1-1;//通过修改比较值CMP，从而修改占空比
   
