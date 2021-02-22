@@ -21,6 +21,7 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
+#include "fmac.h"
 #include "hrtim.h"
 #include "hrtim.h"
 #include "tim.h"
@@ -50,7 +51,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint32_t adc1_value0=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,16 +97,32 @@ int main(void)
   MX_ADC1_Init();
   MX_HRTIM1_Init();
   MX_TIM6_Init();
+  MX_FMAC_Init();
   /* USER CODE BEGIN 2 */
-	
+	/* Perform an ADC automatic self-calibration and enable ADC */
+	if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED) != HAL_OK)
+  {
+    /* Configuration Error */
+    Error_Handler();
+  }
+  /* Start the DMA which is used to move ADC result to the memory */
+  if (HAL_ADC_Start_DMA(&hadc1, (uint32_t *) &adc1_value0, 1) != HAL_OK)
+  {
+    /* Configuration Error */
+    Error_Handler();
+  }  
+
+  
 	HAL_HRTIM_WaveformCounterStart(&hhrtim1,HRTIM_TIMERID_TIMER_A);
 	HAL_HRTIM_WaveformOutputStart(&hhrtim1, HRTIM_OUTPUT_TA1);
 	MyButtonInit();
 	MyTimerInit();
 //	HAL_TIM_Base_Start_IT(&htim6);
-	hhrtim1.Instance->sTimerxRegs[0].PERxR = 54400;//通过修改重装载值PER，从而修改PWM的频率
-	hhrtim1.Instance->sTimerxRegs[0].CMP1xR = 54400-1;//通过修改比较值CMP，从而修改占空比
-
+	
+	/* Start the PWMs */
+	hhrtim1.Instance->sTimerxRegs[0].PERxR = 27200;//通过修改重装载值PER，从而修改PWM的频率-200k
+	hhrtim1.Instance->sTimerxRegs[0].CMP1xR = 1-1;//通过修改比较值CMP，从而修改占空比
+  
 	//sTimerxRegs[0]---->TimerA
 	//sTimerxRegs[1]---->TimerB
 	//sTimerxRegs[2]---->TimerC
@@ -116,7 +133,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		timer_loop();
+//		timer_loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

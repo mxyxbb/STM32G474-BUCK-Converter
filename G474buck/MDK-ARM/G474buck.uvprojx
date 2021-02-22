@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32G474xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32G4xx_HAL_Driver/Inc;../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32G4xx/Include;../Drivers/CMSIS/Include;..\Core\Src</IncludePath>
+              <IncludePath>../Core/Inc;         ../Drivers/STM32G4xx_HAL_Driver/Inc;         ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy;         ../Drivers/CMSIS/Device/ST/STM32G4xx/Include;         ../Drivers/CMSIS/Include;         ..\Core\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -411,6 +411,11 @@
               <FileName>dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>fmac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/fmac.c</FilePath>
             </File>
             <File>
               <FileName>hrtim.c</FileName>
@@ -516,6 +521,11 @@
               <FileName>stm32g4xx_hal_cortex.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g4xx_hal_fmac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_fmac.c</FilePath>
             </File>
             <File>
               <FileName>stm32g4xx_hal_hrtim.c</FileName>
@@ -693,6 +703,11 @@
               <FileName>MyTimer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\Src\MyTimer.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyPid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\Src\MyPid.c</FilePath>
             </File>
           </Files>
         </Group>
