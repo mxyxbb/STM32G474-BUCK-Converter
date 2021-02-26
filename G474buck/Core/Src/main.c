@@ -21,7 +21,6 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
-#include "fmac.h"
 #include "hrtim.h"
 #include "hrtim.h"
 #include "tim.h"
@@ -31,7 +30,7 @@
 /* USER CODE BEGIN Includes */
 #include "Src/MyTimer.h"
 #include "Src/MyButton.h"
-
+#include "MovingAverageLib/moving-average.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +51,7 @@
 
 /* USER CODE BEGIN PV */
 uint32_t adc1_value0=0;
+movingAverage_t avg_filter;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -97,9 +97,11 @@ int main(void)
   MX_ADC1_Init();
   MX_HRTIM1_Init();
   MX_TIM6_Init();
-  MX_FMAC_Init();
   /* USER CODE BEGIN 2 */
 	/* Perform an ADC automatic self-calibration and enable ADC */
+	moving_average_create(&avg_filter, 10, 100);   /* filter size 10, sample time 100ms */
+	/* wait for 1 maximum sample time */
+  HAL_Delay(150);
 	if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED) != HAL_OK)
   {
     /* Configuration Error */
@@ -115,13 +117,13 @@ int main(void)
 	/* Start the PWMs */
 	HAL_HRTIM_WaveformCounterStart(&hhrtim1,HRTIM_TIMERID_TIMER_A);
 	HAL_HRTIM_WaveformOutputStart(&hhrtim1, HRTIM_OUTPUT_TA1);
-	MyButtonInit();
-	MyTimerInit();
-//	HAL_TIM_Base_Start_IT(&htim6);
+//	MyButtonInit();
+//	MyTimerInit();
+	HAL_TIM_Base_Start_IT(&htim6);
 	
 	
-	hhrtim1.Instance->sTimerxRegs[0].PERxR = 27200;//通过修改重装载值PER，从而修改PWM的频率-200k
-	hhrtim1.Instance->sTimerxRegs[0].CMP1xR = 1-1;//通过修改比较值CMP，从而修改占空比
+	hhrtim1.Instance->sTimerxRegs[0].PERxR = 27200-1;//通过修改重装载值PER，从而修改PWM的频率-200k
+	hhrtim1.Instance->sTimerxRegs[0].CMP1xR = 18133-1;//通过修改比较值CMP，从而修改占空比
   
 	//sTimerxRegs[0]---->TimerA
 	//sTimerxRegs[1]---->TimerB
@@ -133,7 +135,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//		timer_loop();
+		moving_average_filter(&avg_filter, adc1_value0);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
